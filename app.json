@@ -1,0 +1,57 @@
+{
+  "expo": {
+    "name": "MAC",
+    "slug": "mact",
+    "scheme": "acme",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/img/applogo.png",
+    "userInterfaceStyle": "light",
+    "newArchEnabled": true,
+    "splash": {
+      "image": "./assets/img/applogo.png",
+      "resizeMode": "cover",
+      "backgroundColor": "#ffffff"
+    },
+    "ios": {
+      "supportsTablet": true
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/img/applogo.png",
+        "backgroundColor": "#ffffff"
+      },
+      "edgeToEdgeEnabled": true,
+      "predictiveBackGestureEnabled": true,
+      "package": "com.webzworld_expo.mac"
+    },
+    "web": {
+      "favicon": "./assets/img/applogo.png",
+      "bundler": "metro"
+    },
+    "plugins": [
+      "expo-router",
+      [
+        "expo-build-properties",
+        {
+          "android": {
+            "compileSdkVersion": 35,
+            "targetSdkVersion": 35,
+            "kotlinVersion": "2.1.20",
+            "buildToolsVersion": "36.0.0"
+          },
+          "ios": {
+            "deploymentTarget": "15.1"
+          }
+        }
+      ]
+    ],
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "b8bca692-8243-40b9-89e2-9e7a27107c9c"
+      }
+    },
+    "owner": "uiwebz"
+  }
+}

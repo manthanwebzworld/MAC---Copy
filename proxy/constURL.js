@@ -1,0 +1,10 @@
+export const baseUrl = "http://13.201.88.141:8008/apiv1";
+export const basefileuploadUrl = "http://13.201.88.141/api/upload"
+export const authUrl = `${baseUrl}/auth`;
+export const userUrl = `${baseUrl}/user`
+export const roleUrl = `${baseUrl}/role`
+export const caseUrl = `${baseUrl}/case`
+export const advocateUrl = `${baseUrl}/advocate`  
+export const caseLogUrl = `${baseUrl}/caselog`
+export const admissionUrl = `${baseUrl}/admission`
+export const DashboardUrl = `${baseUrl}/dashboard`;
