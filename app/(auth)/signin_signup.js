@@ -1,4 +1,15 @@
-import { ImageBackground, View, TextInput, Pressable, TouchableOpacity, Image, ScrollView, KeyboardAvoidingView, Platform, ActivityIndicator } from "react-native";
+import {
+  ImageBackground,
+  View,
+  TextInput,
+  Pressable,
+  TouchableOpacity,
+  Image,
+  ScrollView,
+  KeyboardAvoidingView,
+  Platform,
+  ActivityIndicator,
+} from "react-native";
 import { Text } from "react-native";
 import Checkbox from "expo-checkbox";
 import { useContext, useState } from "react";
@@ -6,65 +17,73 @@ import { Ionicons } from "@expo/vector-icons";
 import { router } from "expo-router";
 import { AuthContext } from "../../auth/AuthContext";
 
+export default function Login() {
+  console.log("In Signin.js");
 
-export default function login() {
-    const [isChecked, setChecked] = useState(false);
-    const [isPassVi, setPassVi] = useState(false);
-    const [isPassVi2, setPassVi2] = useState(false);
-    const [isLogin, setLogin] = useState(true);
+  const [isChecked, setChecked] = useState<boolean>(false);
+  const [isPassVi, setPassVi] = useState<boolean>(false);
+  const [isPassVi2, setPassVi2] = useState<boolean>(false);
+  const [isLogin, setLogin] = useState<boolean>(true);
 
-    const { login1, signup1 } = useContext(AuthContext);
+  const { login1, signup1 } = useContext(AuthContext);
 
-    // login variable
-    const [username, setUsername] = useState("");
-    const [password, setPassword] = useState("");
+  // Login variables
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
 
-    // signup variable
-    const [fullName, setFullName] = useState("");
-    const [email, setEmail] = useState("");
-    const [phoneNumber, setPhoneNumber] = useState("");
-    const [admissionId, setAdmissionId] = useState("");
-    const [signusername, setSignusername] = useState("");
-    const [signpassword, setSignpassword] = useState("");
-    const [confirmPassword, setConfirmPassword] = useState("");
+  // Signup variables
+  const [fullName, setFullName] = useState("");
+  const [email, setEmail] = useState("");
+  const [phoneNumber, setPhoneNumber] = useState("");
+  const [admissionId, setAdmissionId] = useState("");
+  const [signusername, setSignusername] = useState("");
+  const [signpassword, setSignpassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
 
-    // Signp Verifications
-    const [passcheck, setPasscheck] = useState("")
+  // Signup verification
+  const [passcheck, setPasscheck] = useState<boolean>(false);
 
-    const [loading, setLoading] = useState(false);
-    const [loginerror, setLoginerror] = useState(false)
+  const [loading, setLoading] = useState<boolean>(false);
+  const [loginerror, setLoginerror] = useState<boolean>(false);
 
-    // Login
-    const handleLogin = async () => {
-        setLoading(true);
-        const success = await login1(username, password); // make your login() return true/false
-        setLoading(false);
+  // Debug logs for boolean props
+  console.log("isChecked:", isChecked, "typeof:", typeof isChecked);
+  console.log("isPassVi:", isPassVi, "typeof:", typeof isPassVi);
+  console.log("isPassVi2:", isPassVi2, "typeof:", typeof isPassVi2);
+  console.log("loading:", loading, "typeof:", typeof loading);
+  console.log("loginerror:", loginerror, "typeof:", typeof loginerror);
+  console.log("passcheck:", passcheck, "typeof:", typeof passcheck);
 
-        if (success) {
-            router.replace("/(tabs)/dashboard");
-        }
-        else {
-            setLoginerror(true)
-        }
-    };
+  // Login
+  const handleLogin = async () => {
+    setLoading(true);
+    const success = await login1(username, password); 
+    setLoading(false);
 
-    // signUp
-    const handleSignup = async () => {
-        setLoading(true);
-        const signcheck = await signup1(
-            fullName,
-            email,
-            phoneNumber,
-            admissionId,
-            signusername,
-            signpassword
-        );
-        setLoading(false);
+    if (success) {
+      router.replace("/(tabs)/dashboard");
+    } else {
+      setLoginerror(true);
+    }
+  };
 
-        if (signcheck === 'success') {
-            router.replace("/(auth)/signin_signup"); // redirect to login or dashboard
-        }
-    };
+  // Signup
+  const handleSignup = async () => {
+    setLoading(true);
+    const signcheck = await signup1(
+      fullName,
+      email,
+      phoneNumber,
+      admissionId,
+      signusername,
+      signpassword
+    );
+    setLoading(false);
+
+    if (signcheck === "success") {
+      router.replace("/(auth)/signin_signup");
+    }
+  };
 
     return (
         <ImageBackground
@@ -102,7 +121,7 @@ export default function login() {
                                 <Text className="text-black font-bold">Sign In</Text>
                             </Pressable>
                             <Pressable className={`flex-1 px-8 py-3 rounded-full items-center ${!isLogin ? "bg-white" : "bg-tr"}`}
-                                onPress={() => { setLogin(false), setLoginerror(false) }} s
+                                onPress={() => { setLogin(false), setLoginerror(false) }}
                             >
                                 <Text className="text-black">Sign Up</Text>
                             </Pressable>
@@ -129,7 +148,7 @@ export default function login() {
                                                 onChangeText={setPassword}
 
                                             />
-                                            <TouchableOpacity
+                                            {/* <TouchableOpacity
                                                 onPress={() => setPassVi(!isPassVi)}
                                                 className="absolute right-[20px]"
                                             >
@@ -139,7 +158,7 @@ export default function login() {
                                                     color="gray"
 
                                                 />
-                                            </TouchableOpacity>
+                                            </TouchableOpacity> */}
                                         </View>
                                         {loginerror && <Text className="text-red-500">The username or password is incorrect</Text>}
                                         <View className='flex flex-row justify-between mt-2'>
@@ -275,7 +294,7 @@ export default function login() {
                                     </View>
                                     <Pressable className='W-full rounded-full justify-center items-center py-5 bg-blue-500 mt-4'
                                         onPress={() => {
-                                            if (signpassword != confirmPassword) {
+                                            if (signpassword !== confirmPassword) {
                                                 setPasscheck(true);
                                             }
                                             else{
@@ -308,3 +327,4 @@ export default function login() {
         </ImageBackground>
     );
 }
+

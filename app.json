@@ -23,7 +23,7 @@
       },
       "edgeToEdgeEnabled": true,
       "predictiveBackGestureEnabled": true,
-      "package": "com.webzworld_expo.mac"
+      "package": "com.uiwebz.mact"
     },
     "web": {
       "favicon": "./assets/img/applogo.png",

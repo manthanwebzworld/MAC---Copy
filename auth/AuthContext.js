@@ -1,111 +1,122 @@
 import React, { createContext, useState, useEffect } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-
-// import { MAIN_URI } from '../proxy/constURL';
 import { createAdmissionProxy, LoginProxy, RegisterProxy } from '../proxy/main/Authproxy';
 import Toast from 'react-native-toast-message';
-
 import { router } from 'expo-router';
 
-// import { apiFetch } from '../proxy/template/fetch_temp';
-
-// 1️⃣ Create a Context — this will hold login info and functions
 export const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
-  // 2️⃣ State variables
-  const [user, setUser] = useState(null);      // Stores full user object
-  const [loading, setLoading] = useState(true); // Used while loading stored data
+  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
   const [loginerror, setLoginerror] = useState(null);
 
-  // 3️⃣ Runs once when app starts — checks if user is already logged in
+  console.log('🔐 AuthContext - loading:', loading, 'type:', typeof loading);
+  console.log('🔐 AuthContext - loginerror:', loginerror, 'type:', typeof loginerror);
+
   useEffect(() => {
     const loadUserData = async () => {
       try {
         const storedUser = await AsyncStorage.getItem('user');
-        if (storedUser) setUser(JSON.parse(storedUser)); // Restore user
+        console.log('📦 AsyncStorage user:', storedUser ? 'exists' : 'null');
+        
+        if (storedUser) {
+          const parsedUser = JSON.parse(storedUser);
+          console.log('👤 Parsed user:', parsedUser);
+          setUser(parsedUser);
+        }
       } catch (err) {
-        console.error('Error loading user:', err);
+        console.error('❌ Error loading user:', err);
       } finally {
-        setLoading(false); // Done checking
+        console.log('✅ Setting loading to false');
+        setLoading(false); // Ensure this is always boolean
       }
     };
     loadUserData();
   }, []);
 
-  // 4️⃣ Login function
-  const login1 = async (username, password, isSave) => {
+  const login1 = async (username, password) => {
+    console.log('🔐 login1 called with:', { username, passwordLength: password?.length });
+    
     try {
-      setLoginerror(null);
-
       const payload = { username, password };
       const data = await LoginProxy(payload);
 
-      // console.log("Login response:", data);
+      console.log('📡 Login response:', data);
 
       if (data?.token) {
+        console.log('✅ Login successful, storing token');
         await AsyncStorage.setItem("accessToken", data.token);
         await AsyncStorage.setItem("user", JSON.stringify(data));
         setUser(data);
-        return true;
+        return true; // ✅ Explicitly return boolean
       } else {
+        console.log('❌ Login failed - no token');
         Toast.show({
-                type: 'error',
-                text1: data.message || "Please try again later",
-                position: 'top',
-            });
-        return false;
+          type: 'error',
+          text1: data.message || "Please try again later",
+          position: 'top',
+        });
+        return false; // ✅ Explicitly return boolean
       }
     } catch (error) {
-       Toast.show({
-            type: 'error',
-            text1: "An unexpected error occurred. Please try again later.",
-            position: 'top',
-        });
-      return false;
+      console.error('❌ Login error:', error);
+      Toast.show({
+        type: 'error',
+        text1: "An unexpected error occurred. Please try again later.",
+        position: 'top',
+      });
+      return false; // ✅ Explicitly return boolean
     }
   };
 
-  // SignUp function 
   const signup1 = async (fullName, email, phoneNumber, admissionId, username, password) => {
+    console.log('📝 signup1 called');
+    
     try {
-        const payload = {
-            username: username,
-            password: password,
-            admissionId: admissionId,
-            fullName: fullName,
-            email: email,
-            phoneNo: "+91-" + phoneNumber
-        };
-        
-        // console.log("Signup user Data:", payload);
-        const data = await RegisterProxy(payload);
-        // console.log("Signup response:", data);
-        
-        if (data.status === 'success') {
-            Toast.show({
-                type: 'success',
-                text1: 'Account Created Successfully!',
-                position: 'center',
-            });
-        } else {
-            Toast.show({
-                type: 'error',
-                text1: data.message || "Please try again later",
-                position: 'top',
-            });
-        }
-    } catch (error) {
+      const payload = {
+        username: username,
+        password: password,
+        admissionId: admissionId,
+        fullName: fullName,
+        email: email,
+        phoneNo: "+91-" + phoneNumber
+      };
+      
+      console.log('📡 Signup payload:', payload);
+      const data = await RegisterProxy(payload);
+      console.log('📡 Signup response:', data);
+      
+      if (data.status === 'success') {
+        console.log('✅ Signup successful');
         Toast.show({
-            type: 'error',
-            text1: "An unexpected error occurred. Please try again later.",
-            position: 'top',
+          type: 'success',
+          text1: 'Account Created Successfully!',
+          position: 'center',
         });
+        return 'success'; // ✅ Return string explicitly
+      } else {
+        console.log('❌ Signup failed');
+        Toast.show({
+          type: 'error',
+          text1: data.message || "Please try again later",
+          position: 'top',
+        });
+        return 'failed'; // ✅ Return string explicitly
+      }
+    } catch (error) {
+      console.error('❌ Signup error:', error);
+      Toast.show({
+        type: 'error',
+        text1: "An unexpected error occurred. Please try again later.",
+        position: 'top',
+      });
+      return 'error'; // ✅ Return string explicitly
     }
-}
+  };
 
-  // 5️⃣ Logout function
   const logout = async () => {
+    console.log('🚪 Logging out');
     await AsyncStorage.clear();
     setUser(null);
   };
@@ -120,49 +131,72 @@ export const AuthProvider = ({ children }) => {
     respondents,
     documents
   ) => {
+    console.log('📄 Admission called');
+    
     try {
       const payload = {
         defaultClause,
-        jurdisction,           // match backend spelling
+        jurdisction,
         arbitrationClause,
-        refiefSought,          // fix typo: not refiefSought
+        refiefSought,
         claimAmount: parseFloat(claimAmount),
         claimants,
-        respondants: respondents, // match backend spelling
+        respondants: respondents,
         documents,
         status: "DRAFT",
       };
 
-      // console.log("Admission payload:", payload);
-
+      console.log('📡 Admission payload:', payload);
       const data = await createAdmissionProxy(payload);
-      // console.log('Admission Data',data)
-       if (data.status === 'success') {
-            Toast.show({
-                type: 'success',
-                text1: 'Admission Created Successfully!',
-                position: 'center',
-            });
-        } else {
-            Toast.show({
-                type: 'error',
-                text1: data.message || "Please try again later",
-                position: 'top',
-            });
-        }
-        return data.status
-    } catch (error) {
+      console.log('📡 Admission response:', data);
+      
+      if (data.status === 'success') {
+        console.log('✅ Admission successful');
         Toast.show({
-            type: 'error',
-            text1: "An unexpected error occurred. Please try again later.",
-            position: 'top',
+          type: 'success',
+          text1: 'Admission Created Successfully!',
+          position: 'center',
         });
+        return 'success'; // ✅ Return string explicitly
+      } else {
+        console.log('❌ Admission failed');
+        Toast.show({
+          type: 'error',
+          text1: data.message || "Please try again later",
+          position: 'top',
+        });
+        return 'failed'; // ✅ Return string explicitly
+      }
+    } catch (error) {
+      console.error('❌ Admission error:', error);
+      Toast.show({
+        type: 'error',
+        text1: "An unexpected error occurred. Please try again later.",
+        position: 'top',
+      });
+      return 'error'; // ✅ Return string explicitly
     }
   };
 
-  // 6️⃣ Provide the data to the whole app
+  // ✅ Ensure all values are the correct type when providing
+  const contextValue = {
+    user,
+    login1,
+    logout,
+    signup1,
+    loading: Boolean(loading), // ✅ Force to boolean
+    loginerror,
+    Admission
+  };
+
+  console.log('🎁 Context value types:', {
+    user: typeof contextValue.user,
+    loading: typeof contextValue.loading,
+    loginerror: typeof contextValue.loginerror,
+  });
+
   return (
-    <AuthContext.Provider value={{ user, login1, logout, signup1, loading, loginerror, Admission }}>
+    <AuthContext.Provider value={contextValue}>
       {children}
     </AuthContext.Provider>
   );

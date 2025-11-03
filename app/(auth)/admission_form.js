@@ -55,8 +55,6 @@ export default function Admission_form() {
     const [claimAmount, setClaimAmount] = useState('');
     const [errors, setErrors] = useState({});
 
-    const [loading, setLoading] = useState(false);
-
     const handleSubmit = async () => {
         const newErrors = {};
 
@@ -347,7 +345,9 @@ export default function Admission_form() {
                                 className={`bg-black flex items-center py-5 rounded-[14px] mt-6 w-full mb-2`}
                                 onPress={handleSubmit}
                             >
-                            <Text className={` text-white font-bold text-[16px] `}>Submit Admission From</Text>
+                            
+                                        <Text className={` text-white font-bold text-[16px] `}>Submit Admission From</Text> 
+                            
                             </Pressable>
                             <Text className={`text-gray-500 text-[10px] w-[250px] text-center`}>By submitting this form, you agree to the terms and conditions of the arbitration process.</Text>
                         </View>

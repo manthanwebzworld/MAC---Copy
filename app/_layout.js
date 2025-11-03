@@ -9,6 +9,8 @@ import { Provider } from 'react-redux';
 import { store } from '../redux/store';
 
 export default function RootLayout() {
+  console.log("In _lyaout.js")
+
   return (
     <Provider store={store}>
       <SafeAreaProvider>
